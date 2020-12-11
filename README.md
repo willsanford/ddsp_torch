@@ -1,5 +1,5 @@
 # torch ddsp
-This is meant to be a pytorch implemenation of the Google Magenta team's [DDSP](https://github.com/magenta/ddsp)
+This is meant to be a pytorch implemenation of the Google Magenta team's [DDSP](https://github.com/magenta/ddsp). Credit to these fine folks
 
 
 ## TODO
