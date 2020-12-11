@@ -49,6 +49,9 @@ class DAG(Module):
         # Run a check of the DAG list
         _check_dag_list()
 
+    def get_output_names(self):
+        return self.outputs
+
     def forward(x: Dict) -> Dict:
         '''
           This will run a forward pass of the dag. This input is given as dictionary of inputs. The dag will 

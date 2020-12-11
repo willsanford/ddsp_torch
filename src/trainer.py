@@ -9,6 +9,7 @@ import time
 import os
 import datetime
 from src.dag import DAG
+from src.data import dl_from_path
 
 
 class Trainer():
@@ -20,6 +21,8 @@ class Trainer():
                  steps_per_checkpoint: int,
                  save_path: str,
                  save_name: str,
+                 data_path: str,
+                 load_name: str = 'Null',
                  cuda: bool = True):
 
         # Training parameters
@@ -36,6 +39,7 @@ class Trainer():
         self.spc = steps_per_checkpoint
         self.save_name = save_name
         self.save_path = save_path
+        self.load_name = load_name
 
     def _check_cuda(self, cuda: bool) -> str:
         '''
@@ -64,16 +68,28 @@ class Trainer():
           Returns:
             loss: returns outputs of the network run
         '''
-        pass
+        return self.net(inputs)
+    
+    def _load_ckpt(self):
+      '''
+      If a load path is given, load the most recent iteration of the model
+      '''
+        if self.load_name != 'Null':
+          
+          ckpt = os.listdir(self.save_path)
+          latest_ckpt = sorted(ckpt, key= lambda fname: int(fname.split('_')[1]))[0]
+          self.net.load_state_dict(torch.load(os.path.join(self.load_path, latest_ckpt)))
 
     def train(self, dataloader):
         '''
-        This function handles all of training logic
+        This function handles all of training logic.
 
         Args: 
           dataloader This should a preloaded pytorch dataloader
 
         '''
+        _load_ckpt()
+        
         start_time = time.time()        
         epoch = 0
         step = 0
@@ -102,8 +118,8 @@ class Trainer():
 
           step +=1
 
-          # Save the model dictionary in the path {save_path}/save_name_{step number}
+          # Save the model dictionary in the path {save_path}/{save_name}_{step number}
           if step % self.spc == 0:
-            torch.save(self.net, os.path.join(self.save_path, self.save_name + str(step)))
+            torch.save(self.net, os.path.join(self.save_path, self.save_name + '_' +  str(step)))
           
         print(f'Training has finished. Completed in {datetime.timedelta(seconds=(time.time() - start_time))}.')
