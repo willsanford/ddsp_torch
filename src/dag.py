@@ -70,9 +70,13 @@ class DAG(Module):
         for node in self.node_list:
             # Generate a dictionary of the proper inputs. Run these inputs through the node and append the outputs
             # to the greater ouput dictionary
-            node_inputs = {k: outputs[k] for k in node.get_inputs}
+            node_inputs = {k: outputs[k]
+                           for k in node.get_inputs}   # Get the node inputs
+            # Run the inputs through the node to get the node outputs
             node_outputs = node(node_inputs)
+            # Remove the inputs from the list once they are used
             [outputs.pop(key) for key in node_inputs.keys()]
+            # Add the outputs to the list
             outputs.update(node_outputs)
 
         # Raise an exception if the outputs are different from the outputs expected

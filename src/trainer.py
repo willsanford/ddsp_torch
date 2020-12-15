@@ -107,8 +107,8 @@ class Trainer():
 
               # Cuda enable any input tensors if using a cuda device and then send all the data to the proper device
               if self.device != 'cpu':
-                [batch[k].cuda() for k in batch]
-              [batch[k].to(self.device) for k in batch]
+                [batch[k].cuda() for k in batch.keys()]
+              [batch[k].to(self.device) for k in batch.keys()]
 
               loss = self.creiterion(_train_step(batch), labels)
               loss.backward()
